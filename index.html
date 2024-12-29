@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WELLBEING ACADEMY REPORT CARD</title>
     <style>
         body,
@@ -24,16 +24,22 @@
             max-width: 400px;
             height: auto;
             aspect-ratio: 1409 / 2000;
-            background-image: url('Background.png');
-            background-size: cover;
+            background-size: contain;
             background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        #background-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         #name,
         #year,
         #quarter {
             position: absolute;
-            font-size: 0.8rem;
+            font-size: min(2.5vw, 0.8rem);
             font-weight: bold;
             color: #333;
         }
@@ -60,9 +66,9 @@
 
         .stamp-box {
             position: absolute;
-            width: 60px;
-            height: 60px;
-            background-size: cover;
+            width: 15.5%;
+            aspect-ratio: 1;
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
         }
@@ -94,6 +100,7 @@
     <div id="loader">Loading...</div>
     <div id="error-message"></div>
     <div id="report-card">
+        <img id="background-image" src="Background.png" alt="Report Card Background">
         <div id="name"></div>
         <div id="year"></div>
         <div id="quarter"></div>
@@ -108,25 +115,80 @@
 
         function showLoader() {
             document.getElementById('loader').style.display = 'block';
-            document.getElementById('report-card').style.display = 'none';
+            document.getElementById('report-card').style.opacity = '0.3';
             document.getElementById('error-message').style.display = 'none';
         }
 
         function hideLoader() {
             document.getElementById('loader').style.display = 'none';
-            document.getElementById('report-card').style.display = 'block';
+            document.getElementById('report-card').style.opacity = '1';
         }
 
         function showError(message) {
             document.getElementById('error-message').textContent = message;
             document.getElementById('error-message').style.display = 'block';
-            document.getElementById('report-card').style.display = 'none';
+            document.getElementById('report-card').style.opacity = '0.3';
             document.getElementById('loader').style.display = 'none';
         }
 
         function getStampIdFromUrl() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id') || '1'; // Default to '1' if no ID provided
+            return urlParams.get('id') || '1';
+        }
+
+        function calculatePositions(containerWidth) {
+            // Fixed pixel values that work well on mobile
+            return {
+                ROW_OFFSET: containerWidth * 0.355,
+                COL_OFFSET: containerWidth * 0.03,
+                BOX_SIZE: containerWidth * 0.158,
+                ROW_SPACING: containerWidth * 0.0375
+            };
+        }
+
+        async function renderStamps(data) {
+            const container = document.getElementById('report-card');
+            const containerWidth = container.offsetWidth;
+            console.log('Container width:', containerWidth); // Debug log
+
+            if (!containerWidth) {
+                console.error('Container width is 0 or undefined');
+                return;
+            }
+
+            const positions = calculatePositions(containerWidth);
+            console.log('Calculated positions:', positions); // Debug log
+
+            // Clear existing stamp boxes
+            const existingStamps = document.querySelectorAll('.stamp-box');
+            existingStamps.forEach(stamp => stamp.remove());
+
+            // Populate stamp boxes
+            data.stamps.forEach((stamp, index) => {
+                const stampBox = document.createElement('div');
+                stampBox.classList.add('stamp-box');
+                stampBox.style.backgroundImage = `url(${stamp ? ASSETS.stamped : ASSETS.empty})`;
+
+                const row = Math.floor(index / 6);
+                const col = index % 6;
+
+                const additionalRowSpacing = (row < 4 || row > 4) ?
+                    positions.ROW_SPACING :
+                    positions.ROW_SPACING * 0.75;
+
+                const topPosition = positions.ROW_OFFSET +
+                    (row * positions.BOX_SIZE) +
+                    (row * additionalRowSpacing);
+                const leftPosition = positions.COL_OFFSET +
+                    (col * positions.BOX_SIZE);
+
+                console.log(`Stamp ${index} position:`, { top: topPosition, left: leftPosition }); // Debug log
+
+                stampBox.style.top = `${topPosition}px`;
+                stampBox.style.left = `${leftPosition}px`;
+
+                container.appendChild(stampBox);
+            });
         }
 
         async function fetchReportData() {
@@ -146,31 +208,15 @@
                 document.getElementById('year').textContent = data.period.year;
                 document.getElementById('quarter').textContent = data.period.quarter;
 
-                // Clear existing stamp boxes
-                const existingStamps = document.querySelectorAll('.stamp-box');
-                existingStamps.forEach(stamp => stamp.remove());
-
-                // Populate stamp boxes
-                const container = document.getElementById('report-card');
-                const ROW_OFFSET = 142;
-                const COL_OFFSET = 12;
-                const BOX_SIZE = 63;
-                const ROW_SPACING = 15;
-
-                data.stamps.forEach((stamp, index) => {
-                    const stampBox = document.createElement('div');
-                    stampBox.classList.add('stamp-box');
-                    stampBox.style.backgroundImage = `url(${stamp ? ASSETS.stamped : ASSETS.empty})`;
-
-                    const row = Math.floor(index / 6);
-                    const col = index % 6;
-
-                    const additionalRowSpacing = (row < 4 || row > 4) ? ROW_SPACING : ROW_SPACING - 4;
-                    stampBox.style.top = `${ROW_OFFSET + row * BOX_SIZE + row * additionalRowSpacing}px`;
-                    stampBox.style.left = `${COL_OFFSET + col * BOX_SIZE}px`;
-
-                    container.appendChild(stampBox);
-                });
+                // Wait for background image to load before rendering stamps
+                const backgroundImage = document.getElementById('background-image');
+                if (backgroundImage.complete) {
+                    await renderStamps(data);
+                } else {
+                    backgroundImage.onload = async () => {
+                        await renderStamps(data);
+                    };
+                }
 
                 hideLoader();
             } catch (error) {
@@ -180,9 +226,16 @@
         }
 
         // Initial load
-        fetchReportData();
+        window.addEventListener('load', fetchReportData);
 
-        // Optional: Reload when URL changes (for single-page app behavior)
+        // Reload on window resize with debounce
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(fetchReportData, 250);
+        });
+
+        // Optional: Reload when URL changes
         window.addEventListener('popstate', fetchReportData);
     </script>
 </body>
