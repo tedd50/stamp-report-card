@@ -18,7 +18,6 @@
             background-color: #f5f5f5;
         }
 
-        /* Container for the report card */
         #report-card {
             position: relative;
             width: 100%;
@@ -30,52 +29,43 @@
             background-position: center;
         }
 
-        /* Styling for name */
-        #name {
-            position: absolute;
-            top: 15.5%;
-            /* Adjust this for vertical positioning */
-            left: 80%;
-            /* Center horizontally */
-            transform: translateX(-50%);
-            /* Center adjustment */
-            width: 80%;
-            /* Width of the text block */
-            text-align: left;
-            /* Center the text horizontally */
-            font-size: 0.8rem;
-            /* Adjust font size */
-            font-weight: bold;
-            color: #333;
-            /* Text color */
-        }
-
-        /* Styling for year */
-        #year {
-            position: absolute;
-            top: 95%;
-            /* Adjust this for vertical positioning */
-            left: 20%;
-            /* Center horizontally */
-            transform: translateX(-50%);
-            width: 80%;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #555;
-        }
-
-        /* Styling for quarter */
+        #name,
+        #year,
         #quarter {
             position: absolute;
-            top: 95%;
-            /* Adjust this for vertical positioning */
-            left: 76.5%;
-            /* Center horizontally */
-            transform: translateX(-50%);
-            width: 80%;
-            text-align: center;
             font-size: 0.8rem;
-            color: #555;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #name {
+            top: 15.5%;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: left;
+        }
+
+        #year {
+            top: 95%;
+            left: 20%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        #quarter {
+            top: 95%;
+            left: 76.5%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .stamp-box {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
     </style>
 </head>
@@ -85,20 +75,15 @@
         <div id="name">Novita Liesera</div>
         <div id="year">2025</div>
         <div id="quarter">1</div>
-        <div id="stamps-container"></div>
     </div>
 
     <script>
-        // API URL
         const API_URL = 'https://loyalty-stamp.onrender.com/stamps/1';
-
-        // Image assets
         const ASSETS = {
-            stamped: 'StampedBox.png',
-            empty: 'EmptyBox.png'
+            stamped: './StampedBox.png',
+            empty: './EmptyBox.png'
         };
 
-        // Dynamic rendering
         async function fetchReportData() {
             try {
                 const response = await fetch(API_URL);
@@ -111,16 +96,22 @@
 
                 // Populate stamp boxes
                 const container = document.getElementById('report-card');
+                const ROW_OFFSET = 142; // Top padding from the report card
+                const COL_OFFSET = 12;  // Left padding from the report card
+                const BOX_SIZE = 63;    // Size of each box (includes spacing within the row)
+                const ROW_SPACING = 20; // Extra space between rows
+
                 data.stamps.forEach((stamp, index) => {
                     const stampBox = document.createElement('div');
                     stampBox.classList.add('stamp-box');
                     stampBox.style.backgroundImage = `url(${stamp ? ASSETS.stamped : ASSETS.empty})`;
 
-                    // Set dynamic position (adjust these to match your design grid)
-                    const row = Math.floor(index / 5); // Assume 5 columns per row
-                    const col = index % 5;
-                    stampBox.style.top = `${150 + row * 70}px`; // Example: 150px top offset + 70px per row
-                    stampBox.style.left = `${20 + col * 70}px`; // Example: 20px left offset + 70px per column
+                    const row = Math.floor(index / 6); // 6 boxes per row
+                    const col = index % 6;
+
+                    // Add row spacing to the top position
+                    stampBox.style.top = `${ROW_OFFSET + row * (BOX_SIZE + ROW_SPACING)}px`;
+                    stampBox.style.left = `${COL_OFFSET + col * BOX_SIZE}px`;
 
                     container.appendChild(stampBox);
                 });
