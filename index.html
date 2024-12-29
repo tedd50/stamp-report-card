@@ -99,7 +99,7 @@
                 const ROW_OFFSET = 142; // Top padding from the report card
                 const COL_OFFSET = 12;  // Left padding from the report card
                 const BOX_SIZE = 63;    // Size of each box (includes spacing within the row)
-                const ROW_SPACING = 20; // Extra space between rows
+                const ROW_SPACING = 15; // Extra space between rows
 
                 data.stamps.forEach((stamp, index) => {
                     const stampBox = document.createElement('div');
@@ -109,8 +109,11 @@
                     const row = Math.floor(index / 6); // 6 boxes per row
                     const col = index % 6;
 
-                    // Add row spacing to the top position
-                    stampBox.style.top = `${ROW_OFFSET + row * (BOX_SIZE + ROW_SPACING)}px`;
+                    // Determine the row spacing dynamically
+                    const additionalRowSpacing = (row < 4 || row > 4) ? ROW_SPACING : ROW_SPACING - 4;
+
+                    // Calculate the position with conditional spacing
+                    stampBox.style.top = `${ROW_OFFSET + row * BOX_SIZE + row * additionalRowSpacing}px`;
                     stampBox.style.left = `${COL_OFFSET + col * BOX_SIZE}px`;
 
                     container.appendChild(stampBox);
