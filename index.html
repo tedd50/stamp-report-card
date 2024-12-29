@@ -18,75 +18,74 @@
             background-color: #f5f5f5;
         }
 
+        /* Container for the report card */
         #report-card {
             position: relative;
             width: 100%;
-            /* Makes the background image responsive */
             max-width: 400px;
-            /* Limit the width for mobile view */
             height: auto;
-            /* Maintain aspect ratio */
             aspect-ratio: 1409 / 2000;
-            /* Ensures the correct height is calculated based on width */
             background-image: url('Background.png');
             background-size: cover;
-            /* Ensures the entire image fills the container */
             background-position: center;
-            /* Centers the image */
         }
 
-        .stamp-box {
+        /* Styling for name */
+        #name {
             position: absolute;
-            width: 0px;
-            /* Adjust the size to fit the pink squares */
-            height: 60px;
-        }
-
-        /* Example positions for each category */
-        .admission {
-            top: 100px;
-            left: 20px;
-        }
-
-        .check-in {
-            top: 100px;
-            left: 100px;
-        }
-
-        .finals {
-            top: 100px;
-            left: 180px;
-        }
-
-        .engagement {
-            top: 100px;
-            left: 260px;
-        }
-
-        /* Add additional positions for the rest of the boxes */
-
-        #student-info {
-            position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 15.5%;
+            /* Adjust this for vertical positioning */
+            left: 80%;
+            /* Center horizontally */
+            transform: translateX(-50%);
+            /* Center adjustment */
+            width: 80%;
+            /* Width of the text block */
+            text-align: left;
+            /* Center the text horizontally */
+            font-size: 0.8rem;
+            /* Adjust font size */
+            font-weight: bold;
             color: #333;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
+            /* Text color */
         }
 
-        #student-info span {
-            display: block;
+        /* Styling for year */
+        #year {
+            position: absolute;
+            top: 95%;
+            /* Adjust this for vertical positioning */
+            left: 20%;
+            /* Center horizontally */
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
+        }
+
+        /* Styling for quarter */
+        #quarter {
+            position: absolute;
+            top: 95%;
+            /* Adjust this for vertical positioning */
+            left: 76.5%;
+            /* Center horizontally */
+            transform: translateX(-50%);
+            width: 80%;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #555;
         }
     </style>
 </head>
 
 <body>
     <div id="report-card">
-        <div id="student-info">
-            <span id="name"></span>
-            <span id="year"></span>
-            <span id="quarter"></span>
-        </div>
+        <div id="name">Novita Liesera</div>
+        <div id="year">2025</div>
+        <div id="quarter">1</div>
+        <div id="stamps-container"></div>
     </div>
 
     <script>
