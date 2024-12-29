@@ -51,14 +51,14 @@
         }
 
         #year {
-            top: 95%;
+            top: 94.5%;
             left: 20%;
             transform: translateX(-50%);
             text-align: center;
         }
 
         #quarter {
-            top: 95%;
+            top: 94.5%;
             left: 76.5%;
             transform: translateX(-50%);
             text-align: center;
@@ -149,7 +149,7 @@
         async function renderStamps(data) {
             const container = document.getElementById('report-card');
             const containerWidth = container.offsetWidth;
-            console.log('Container width:', containerWidth); // Debug log
+            // console.log('Container width:', containerWidth); // Debug log
 
             if (!containerWidth) {
                 console.error('Container width is 0 or undefined');
@@ -157,7 +157,7 @@
             }
 
             const positions = calculatePositions(containerWidth);
-            console.log('Calculated positions:', positions); // Debug log
+            // console.log('Calculated positions:', positions); // Debug log
 
             // Clear existing stamp boxes
             const existingStamps = document.querySelectorAll('.stamp-box');
@@ -182,7 +182,7 @@
                 const leftPosition = positions.COL_OFFSET +
                     (col * positions.BOX_SIZE);
 
-                console.log(`Stamp ${index} position:`, { top: topPosition, left: leftPosition }); // Debug log
+                // console.log(`Stamp ${index} position:`, { top: topPosition, left: leftPosition }); // Debug log
 
                 stampBox.style.top = `${topPosition}px`;
                 stampBox.style.left = `${leftPosition}px`;
