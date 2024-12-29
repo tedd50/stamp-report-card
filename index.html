@@ -67,63 +67,124 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        #loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: #333;
+            display: none;
+        }
+
+        #error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: red;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 
 <body>
+    <div id="loader">Loading...</div>
+    <div id="error-message"></div>
     <div id="report-card">
-        <div id="name">Novita Liesera</div>
-        <div id="year">2025</div>
-        <div id="quarter">1</div>
+        <div id="name"></div>
+        <div id="year"></div>
+        <div id="quarter"></div>
     </div>
 
     <script>
-        const API_URL = 'https://loyalty-stamp.onrender.com/stamps/1';
+        const BASE_API_URL = 'https://loyalty-stamp.onrender.com/stamps/';
         const ASSETS = {
             stamped: './StampedBox.png',
             empty: './EmptyBox.png'
         };
 
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('report-card').style.display = 'none';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function hideLoader() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('report-card').style.display = 'block';
+        }
+
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('report-card').style.display = 'none';
+            document.getElementById('loader').style.display = 'none';
+        }
+
+        function getStampIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '1'; // Default to '1' if no ID provided
+        }
+
         async function fetchReportData() {
+            const stampId = getStampIdFromUrl();
+            showLoader();
+
             try {
-                const response = await fetch(API_URL);
+                const response = await fetch(`${BASE_API_URL}${stampId}`);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch data for stamp ID ${stampId}`);
+                }
+
                 const data = await response.json();
 
                 // Populate student info
-                document.getElementById('name').textContent = `${data.name}`;
-                document.getElementById('year').textContent = `${data.period.year}`;
-                document.getElementById('quarter').textContent = `${data.period.quarter}`;
+                document.getElementById('name').textContent = data.name;
+                document.getElementById('year').textContent = data.period.year;
+                document.getElementById('quarter').textContent = data.period.quarter;
+
+                // Clear existing stamp boxes
+                const existingStamps = document.querySelectorAll('.stamp-box');
+                existingStamps.forEach(stamp => stamp.remove());
 
                 // Populate stamp boxes
                 const container = document.getElementById('report-card');
-                const ROW_OFFSET = 142; // Top padding from the report card
-                const COL_OFFSET = 12;  // Left padding from the report card
-                const BOX_SIZE = 63;    // Size of each box (includes spacing within the row)
-                const ROW_SPACING = 15; // Extra space between rows
+                const ROW_OFFSET = 142;
+                const COL_OFFSET = 12;
+                const BOX_SIZE = 63;
+                const ROW_SPACING = 15;
 
                 data.stamps.forEach((stamp, index) => {
                     const stampBox = document.createElement('div');
                     stampBox.classList.add('stamp-box');
                     stampBox.style.backgroundImage = `url(${stamp ? ASSETS.stamped : ASSETS.empty})`;
 
-                    const row = Math.floor(index / 6); // 6 boxes per row
+                    const row = Math.floor(index / 6);
                     const col = index % 6;
 
-                    // Determine the row spacing dynamically
                     const additionalRowSpacing = (row < 4 || row > 4) ? ROW_SPACING : ROW_SPACING - 4;
-
-                    // Calculate the position with conditional spacing
                     stampBox.style.top = `${ROW_OFFSET + row * BOX_SIZE + row * additionalRowSpacing}px`;
                     stampBox.style.left = `${COL_OFFSET + col * BOX_SIZE}px`;
 
                     container.appendChild(stampBox);
                 });
+
+                hideLoader();
             } catch (error) {
                 console.error('Error fetching data:', error);
+                showError(`Error loading report card: ${error.message}`);
             }
         }
 
+        // Initial load
         fetchReportData();
+
+        // Optional: Reload when URL changes (for single-page app behavior)
+        window.addEventListener('popstate', fetchReportData);
     </script>
 </body>
 
