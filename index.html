@@ -5,7 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WELLBEING ACADEMY REPORT CARD</title>
+    <!-- Add Poppins font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Set Poppins as default font */
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
         body,
         html {
             margin: 0;
@@ -40,25 +49,26 @@
         #quarter {
             position: absolute;
             font-size: min(2.5vw, 0.8rem);
-            font-weight: bold;
+            font-weight: 600;
+            /* Semibold weight for Poppins */
             color: #333;
         }
 
         #name {
-            top: 15.5%;
+            top: 15%;
             left: 40%;
             text-align: left;
         }
 
         #year {
-            top: 94.5%;
+            top: 94%;
             left: 20%;
             transform: translateX(-50%);
             text-align: center;
         }
 
         #quarter {
-            top: 94.5%;
+            top: 94%;
             left: 76.5%;
             transform: translateX(-50%);
             text-align: center;
@@ -81,6 +91,8 @@
             font-size: 1.2rem;
             color: #333;
             display: none;
+            font-weight: 500;
+            /* Medium weight for loader text */
         }
 
         #error-message {
@@ -92,9 +104,13 @@
             color: red;
             text-align: center;
             display: none;
+            font-weight: 500;
+            /* Medium weight for error text */
         }
     </style>
 </head>
+
+<!-- Rest of the HTML and JavaScript remains the same -->
 
 <body>
     <div id="loader">Loading...</div>
