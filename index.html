@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WELLBEING ACADEMY REPORT CARD</title>
-    <!-- Add Poppins font from Google Fonts -->
+    <!-- Changed to Patrick Hand font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
     <style>
-        /* Set Poppins as default font */
+        /* Set Patrick Hand as default font */
         * {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Patrick Hand', cursive;
         }
 
         body,
@@ -49,9 +49,8 @@
         #quarter {
             position: absolute;
             font-size: min(2.5vw, 0.8rem);
-            font-weight: 600;
-            /* Semibold weight for Poppins */
             color: #333;
+            /* Removed font-weight as Patrick Hand comes in only one weight */
         }
 
         #name {
@@ -91,8 +90,6 @@
             font-size: 1.2rem;
             color: #333;
             display: none;
-            font-weight: 500;
-            /* Medium weight for loader text */
         }
 
         #error-message {
@@ -104,13 +101,11 @@
             color: red;
             text-align: center;
             display: none;
-            font-weight: 500;
-            /* Medium weight for error text */
         }
     </style>
 </head>
 
-<!-- Rest of the HTML and JavaScript remains the same -->
+<!-- Rest of the HTML and JavaScript remains unchanged -->
 
 <body>
     <div id="loader">Loading...</div>
